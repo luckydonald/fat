@@ -29,15 +29,21 @@ while read -r line; do
         echo "Copied local repository: $URL"
     else
         # Handle remote URLs
-        REPO_NAME=$(basename "$URL")
+        REPO_NAME=$(basename "$URL" | sed 's/[\/:.]/_/g') # Sanitize the name for storage
         DOWNLOAD_DIR="$TEMP_DIR/$REPO_NAME"
         mkdir -p "$DOWNLOAD_DIR"
 
-        # Use wget to download the repository index
-        wget -q --mirror --no-parent --directory-prefix="$DOWNLOAD_DIR" "$URL"
-        echo "Downloaded remote repository: $URL"
+        # Download and extract the APKINDEX.tar.gz
+        wget -q -P "$DOWNLOAD_DIR" "$URL"/APKINDEX.tar.gz
+        if [ -f "$DOWNLOAD_DIR/APKINDEX.tar.gz" ]; then
+            tar -xzf "$DOWNLOAD_DIR/APKINDEX.tar.gz" -C "$DOWNLOAD_DIR"
+            rm "$DOWNLOAD_DIR/APKINDEX.tar.gz"  # Remove the tar.gz to keep only the uncompressed file
+            echo "Uncompressed APKINDEX for repository: $URL"
+        else
+            echo "Failed to download APKINDEX.tar.gz from: $URL"
+        fi
     fi
+
 done < "$REPO_FILE"
 
-ls -lah $TEMP_DIR
-ls -lah $TEMP_DIR/*/
+ls -lah $TEMP_DIR $TEMP_DIR/*
