@@ -3,7 +3,6 @@
 # Define input and output files
 REPO_FILE="/etc/apk/repositories"
 TEMP_DIR="/tmp/repositories_data"
-ARCHIVE_NAME="repositories.tar.gz"
 
 # Create a temporary directory to store downloaded content
 mkdir -p "$TEMP_DIR"
