@@ -6,7 +6,7 @@ RUN wget $SOLVER \
  && ls -lah
 
 FROM alpine:latest AS dl
-ADD script.sh
+ADD script.sh script.sh
 RUN chmod +x script.sh && ./script.sh
 
 FROM python:latest AS grabby
