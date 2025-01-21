@@ -40,5 +40,4 @@ while read -r line; do
 done < "$REPO_FILE"
 
 ls -lah $TEMP_DIR
-
-
+ls -lah $TEMP_DIR/*/
