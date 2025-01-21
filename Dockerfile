@@ -5,21 +5,17 @@ RUN wget $SOLVER \
  && pwd \
  && ls -lah
 
-FROM python:latest AS dl
-ENV APPINDEX=https://dl-cdn.alpinelinux.org/alpine/edge/main/x86_64/APKINDEX.tar.gz
-RUN pip install pulp
-RUN wget $APPINDEX \
- && tar -xvzf 'APKINDEX.tar.gz' \
- && pwd \
- && ls -lah
+FROM alpine:latest AS dl
+ADD script.sh
+RUN chmod +x script.sh && ./script.sh
 
 FROM python:latest AS grabby
 RUN pip install pulp
-COPY --from=dl APKINDEX /APKINDEX
+COPY --from=dl /tmp/repositories_data /repositories
 COPY --from=script solve.py /solve.py
 RUN  pwd \
  && ls -lah \
- && python /solve.py /APKINDEX \
+ && python /solve.py /repositories/* \
  && pwd \
  && ls -lah
 
