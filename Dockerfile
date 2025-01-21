@@ -25,4 +25,4 @@ RUN  pwd \
 
 FROM alpine:latest
 COPY --from=grabby out packages.txt
-RUN while read package; do apk add "$package"; done < packages.txt
+RUN xargs -a packages.txt apk add
